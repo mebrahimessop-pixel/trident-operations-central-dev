@@ -6,7 +6,7 @@ agent.
 
 ## GitHub repository mode
 
-The private GitHub repository is the durable source of truth for the coordination
+The private GitHub repository [trident-operations-central-dev](https://github.com/mebrahimessop-pixel/trident-operations-central-dev) is the durable source of truth for the coordination
 files and build documentation. Commit `outputs/AI_AGENT_STATUS.json` and the
 corresponding collaboration-log entry together so the next agent can reconstruct
 the exact state. Use pull requests or short-lived branches for implementation

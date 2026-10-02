@@ -173,3 +173,6 @@ PRODUCTION_APPROVAL: REQUIRED
 
 Do not mark a finding VERIFIED without direct evidence.
 ```
+# Shared GitHub repository
+
+The project is mirrored in the private repository [trident-operations-central-dev](https://github.com/mebrahimessop-pixel/trident-operations-central-dev). Treat the repository contents as the durable handoff source of truth. Before starting, read `outputs/AI_AGENT_STATUS.json`, the newest `outputs/AI_COLLABORATION_LOG.md` entry, and `outputs/COORDINATION_SETUP.md`. Commit coordination-document updates with the related implementation notes, and never commit secrets, tokens, live tenant exports, or personal data.

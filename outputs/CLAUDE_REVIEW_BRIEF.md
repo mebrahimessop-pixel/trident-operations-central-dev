@@ -55,3 +55,6 @@ Assess the architecture, security boundaries, Power Apps data-source design, Pow
 7. A short ordered queue of the next changes, distinguishing safe DEV changes from anything that needs human approval.
 
 Keep your inspection read-only unless the user explicitly authorizes you to edit the shared project. Send proposed changes back to the primary build agent for implementation and verification. The goal is an iterative two-agent build loop: inspect, propose, implement, test, then review again.
+# Repository and handoff source
+
+The private GitHub repository is [trident-operations-central-dev](https://github.com/mebrahimessop-pixel/trident-operations-central-dev). Use it as the shared source for review notes, UAT evidence, schemas, and agent handoffs. Read `outputs/AI_AGENT_STATUS.json` and the newest collaboration-log entry before reviewing or changing anything. Keep DEV-only scope and `productionWritesEnabled=false`; do not commit credentials or tenant data.

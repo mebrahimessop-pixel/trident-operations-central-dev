@@ -1820,3 +1820,58 @@ Pre-activation fixes required on Flow 4 before turning it ON:
 After those fixes and activation, run F4-T1 through F4-T6.
 
 Then build Flows 2, 1, 3, 5 in that order using the specs above. Flows 2 and 1 are simpler (single child list, no count logic). Flow 3 is most complex (multi-item count requires filter actions and variables). Flow 5 requires the VisitKey null guard.
+
+
+## 2026-10-02 19:15 SAST -- CLAUDE CODE -- Seq 14: Codex seq 15 summary + user execution guide
+
+**Context:** Codex is at weekly cap until 2026-10-07. Claude Code carrying the project.
+
+### Codex seq 15 outcome (from AI_AGENT_STATUS.json)
+
+Codex inspected Flow 4 (ae08aa72-25cb-484a-82ea-883281a36d35) before hitting its usage limit:
+
+- **Item B confirmed correct:** Parent Status guards in the nested if expression are present. The Status field mapping checks both trigger.Status AND parent.Status before writing a new value.
+- **Item D confirmed correct:** Timestamp expressions use the blank-safe pattern  -- timestamps are not unconditionally overwritten.
+- **Item A outstanding:** CloseEligible is not yet in the Update VisitWorkflow action body.
+- **Item C outstanding:** The EDCStatus mirror field does not yet map "Returned" -> "In Progress".
+- Flow was NOT activated. Remains OFF. Editing session ended before the fixes could be applied.
+
+### WU1-WU4 -- USER_EXECUTION_GUIDE.md written
+
+Created  containing step-by-step click-by-click instructions for all remaining work the user can execute independently during the Codex downtime:
+
+- **Part 1:** Fix Flow 4 Items A and C (exact expressions), activate, run F4-T1 through F4-T6.
+- **Part 2:** Build Flow 2 (VisitClinicalStatus roll-up) -- Save As from Flow 4, step-by-step with all expressions.
+- **Part 3:** Build Flow 1 (VisitAdmin roll-up) -- Save As from Flow 2.
+- **Part 4:** Build Flow 3 (QCFinding roll-up) -- most complex; includes Get all QCFindings, three Filter arrays, three variables, full nested Status expression.
+- **Part 5:** Build Flow 5 (PIAction roll-up) -- includes VisitKey null guard and full CloseEligible composite check expression.
+- **Part 6:** P0-3 WorkflowAudit permissions (summary; full spec in seq 10 WU1).
+- **Parts 7-9:** P1-3 auto-timestamps, P1-4 duplicate detection, P1-5 chronology validation -- complete Power Apps formulas for all screens.
+- **Part 10:** UAT test cases R-01 through R-15 with expected results.
+
+All Power Automate expressions are ready to copy-paste. All Power Apps formulas include the correct guard patterns (UTCNow blank-check, IsBlank(Gallery.Selected) new-record guard, chained If for multi-rule chronology).
+
+### CloseEligible strategy in this guide
+
+Rather than adding cross-list Get items calls to every flow (which would make each flow significantly more complex), the guide uses a two-tier approach:
+- Flows 2, 1, 3, 4 set CloseEligible = false (conservatively safe -- they cannot confirm all conditions).
+- Flow 5 (PIAction) computes the full composite check using parent-mirrored fields: EDCStatus = Complete AND QCStatus = Passed AND piActionStatusValue = Complete or Not Required.
+
+This converges correctly because Flow 5 runs after all EDC and QC transitions have been mirrored to the parent by Flows 4 and 3 respectively. The only condition not strictly verified is VisitClinicalStatus.Status = Complete, which is proxied by QC Passed already being set (QC cannot pass without VCS having been Complete). If a strict VCS check is required, add a Get items for VisitClinicalStatus in Flow 5 before the Update.
+
+### Action log control name note
+
+The guide uses placeholder control names (Gallery_VCS, Gallery_EDC, etc.). The user must substitute the actual control names from their Power Apps app. If the gallery names are different, only the gallery reference changes -- the Patch and condition logic is identical.
+
+### Request to user
+
+To continue the coordination log after executing each part, append an entry here (or paste the results and I will write the log entry on the next Claude session). Required evidence for each flow:
+- Flow name and ID
+- Checker result (errors/warnings)
+- Activation test run IDs
+- Any expression that needed adjustment
+
+Required evidence for Power Apps changes:
+- Screen name and control name substitutions made
+- Verification test result (timestamp stamped / not stamped on re-save)
+

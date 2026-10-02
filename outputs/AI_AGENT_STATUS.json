@@ -1,29 +1,29 @@
 {
   "protocolVersion": "1.3",
   "environment": "DEV",
-  "activeAgent": "CODEX",
+  "activeAgent": "NONE",
   "status": "HANDOFF_READY",
   "leaseOwner": "NONE",
-  "leaseStartedAt": "2026-10-02T18:47:54+02:00",
-  "leaseExpiresAt": "2026-10-02T20:17:54+02:00",
-  "handoffSequence": 15,
-  "handoffCreatedAt": "2026-10-02T16:15:00.0000000+02:00",
+  "leaseStartedAt": "2026-10-02T19:15:00+02:00",
+  "leaseExpiresAt": "2026-10-02T20:45:00+02:00",
+  "handoffSequence": 16,
+  "handoffCreatedAt": "2026-10-02T19:45:00+02:00",
   "handoffTrigger": "work_unit_cap",
-  "workUnitsCompleted": 22,
-  "partialActionState": "Flow 4 inspection confirmed Items B and D are correct; Items A and C remain to be fixed in the Update item action",
-  "lastCompletedAction": "WU1: Flow 4 design review with pre-activation checklist (Items A-D) and F4-T1 through F4-T6 test script; Flows 2, 1, 3, 5 full build specs — all appended to collaboration log (seq 13, lines 1352-1822)",
-  "nextAction": "Open Flow 4 ae08aa72-25cb-484a-82ea-883281a36d35. Add CloseEligible to Update item using parent EDCStatus=Complete AND QCStatus=Passed AND PIActionStatus=Complete/Not Required; map trigger Returned to parent EDCStatus In Progress; save, checker 0/0, then activate and run F4-T1 through F4-T6. Items B and D were confirmed correct. Build Flows 2, 1, 3, 5 afterward. P0-3 remains staged — hold until user confirms.",
-  "sessionSummary": "Codex seq 15 inspected Flow 4. Parent Status guards and timestamp null-checks are correct. CloseEligible and Returned mapping remain uncorrected because the Power Automate session hit a usage limit during editing. GitHub repository was pushed successfully.",
-  "evidence": "AI_COLLABORATION_LOG.md seq 13 entry; log now 1822 lines; flow_specs.py executed successfully.",
-  "lastHeartbeatAt": "2026-10-02T19:05:00+02:00",
-  "updatedAt": "2026-10-02T19:05:00+02:00",
+  "workUnitsCompleted": 27,
+  "partialActionState": null,
+  "lastCompletedAction": "Claude Code seq 14: USER_EXECUTION_GUIDE.md written (Parts 1-10); seq 14 appended to collaboration log (1877 lines).",
+  "nextAction": "User: follow USER_EXECUTION_GUIDE.md to execute Parts 1-5 (flows) and Parts 7-9 (Power Apps). Confirm P0-3 to unblock Part 6. Codex resumes 2026-10-07 to verify and pick up anything outstanding.",
+  "sessionSummary": "Codex weekly cap until 2026-10-07. Claude Code produced complete user execution guide covering all remaining P0-2 flows, P0-3, P1-3/P1-4/P1-5 with copy-paste expressions and test cases.",
+  "evidence": "outputs/USER_EXECUTION_GUIDE.md created; AI_COLLABORATION_LOG.md seq 14 appended (1877 lines).",
+  "lastHeartbeatAt": "2026-10-02T19:45:00+02:00",
+  "updatedAt": "2026-10-02T19:45:00+02:00",
   "codex": {
-    "status": "ACTIVE",
-    "handoffTrigger": "manual",
+    "status": "UNAVAILABLE",
+    "handoffTrigger": "weekly_cap",
     "usagePolicy": "stop_at_work_unit_cap",
     "maxWorkUnitsPerSession": 5,
-    "lastCompleted": "P1-2 QCFinding guard verified; P1-6 timezone verified; Flow 4 ae08aa72-25cb-484a-82ea-883281a36d35 saved (OFF, checker 0/0, pre-activation fixes required)",
-    "nextAction": "Fix Flow 4 Items A-D, activate, run F4-T1 through F4-T6. Build Flows 2, 1, 3, 5 using seq 13 specs. Hold P0-3 until user confirms.",
+    "lastCompleted": "Seq 15: Flow 4 Items B and D confirmed correct. Items A and C outstanding. Usage limit during editing.",
+    "nextAction": "Resume 2026-10-07: verify user execution log entries, pick up anything the user could not complete, run end-to-end UAT R-01 to R-15.",
     "tenantWorkAllowed": true,
     "workUnitsCompleted": 12
   },
@@ -32,10 +32,10 @@
     "handoffTrigger": "work_unit_cap",
     "usagePolicy": "stop_at_work_unit_cap",
     "maxWorkUnitsPerSession": 5,
-    "lastCompleted": "Flow 4 review (Items A-D) + F4-T1/F4-T6 test script + Flows 2/1/3/5 build specs appended to log (seq 13)",
-    "nextAction": "Wait for Codex to complete Flows 4, 2, 1, 3, 5 and P0-3. Claude Code next: P1-3/P1-4/P1-5 Power Apps formulas once Codex confirms UAT readiness.",
+    "lastCompleted": "Seq 14: USER_EXECUTION_GUIDE.md (Parts 1-10) + seq 14 log entry.",
+    "nextAction": "On next session: read user's execution log entries, update actionStates, write verification evidence, prepare final launch gate review.",
     "tenantWorkAllowed": false,
-    "workUnitsCompleted": 10
+    "workUnitsCompleted": 15
   },
   "actionStates": {
     "P0-1_EDC_guard_QueryStatus_fix": {
@@ -45,12 +45,12 @@
     },
     "P0-2_VisitWorkflow_rollup_flows": {
       "status": "STARTED_UNVERIFIED",
-      "owner": "codex",
+      "owner": "user_or_codex",
       "blockedOn": null
     },
     "P0-3_WorkflowAudit_append_only": {
       "status": "STARTED_UNVERIFIED",
-      "owner": "codex",
+      "owner": "user_or_codex",
       "blockedOn": "Action-time user confirmation required before committing DEV SharePoint permission changes"
     },
     "P1-1_PIAction_completion_guard": {
@@ -65,17 +65,17 @@
     },
     "P1-3_auto_timestamps": {
       "status": "NOT_STARTED",
-      "owner": "codex",
+      "owner": "user_or_codex",
       "blockedOn": null
     },
     "P1-4_duplicate_detection": {
       "status": "NOT_STARTED",
-      "owner": "codex",
+      "owner": "user_or_codex",
       "blockedOn": null
     },
     "P1-5_chronology_validation": {
       "status": "NOT_STARTED",
-      "owner": "codex",
+      "owner": "user_or_codex",
       "blockedOn": null
     },
     "P1-6_timezone_verification": {
@@ -115,7 +115,7 @@
     "heartbeatRule": "Refresh lastHeartbeatAt after every tool call that writes a file or completes a discrete work unit.",
     "preWriteRule": "Before starting each work unit write partialActionState: 'starting <task>' to status file. After completing write partialActionState: null and increment workUnitsCompleted.",
     "leaseDurationMinutes": 90,
-    "userWarning": "Handoff is ready. Switch to Codex now.",
+    "userWarning": "No agent active. User executing Parts 1-10 of USER_EXECUTION_GUIDE.md. Codex resumes 2026-10-07.",
     "staleLeasePolicy": "If status is ACTIVE but lastHeartbeatAt is older than leaseDurationMinutes, probe-handoff.ps1 auto-writes HANDOFF_READY with handoffTrigger watchdog_stale_lease. Incoming agent reads partialActionState to determine what was in progress.",
     "handoffTriggerValues": [
       "work_unit_cap",
