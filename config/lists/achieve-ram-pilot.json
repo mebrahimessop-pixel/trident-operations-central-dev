@@ -1,0 +1,1068 @@
+{
+  "schemaVersion": "1.0.0",
+  "source": {
+    "name": "Trident_Clinical_Microsoft_Lists_Build_Pack_v1.2.xlsx",
+    "version": "1.2",
+    "sharePointDocumentId": "01KBG4N2IHGDTZJ54J5BFJKVLB26UEGTQL",
+    "approvedForPrivateRepositoryBy": "Repository owner",
+    "approvedOn": "2026-09-15"
+  },
+  "defaults": {
+    "versioningRequired": true,
+    "attachmentsEnabled": false,
+    "allowDeletion": false
+  },
+  "lists": [
+    {
+      "name": "StudyMaster",
+      "purpose": "One record per protocol/site study",
+      "primaryKey": "StudyID",
+      "initialAccess": "Broad read; management/SSC edit",
+      "notes": "Lookup source for study-scoped lists",
+      "columns": [
+        {
+          "order": 1,
+          "name": "StudyID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "Protocol/site-friendly short key"
+        },
+        {
+          "order": 2,
+          "name": "ProtocolNumber",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 3,
+          "name": "StudyName",
+          "type": "Single line text",
+          "required": true,
+          "indexed": false
+        },
+        {
+          "order": 4,
+          "name": "Sponsor",
+          "type": "Single line text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 5,
+          "name": "CRO",
+          "type": "Single line text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 6,
+          "name": "SiteNumber",
+          "type": "Single line text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 7,
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Pipeline;Start-up;Active;Paused;Closing;Closed;Archived"
+        },
+        {
+          "order": 8,
+          "name": "PI",
+          "type": "Person",
+          "required": true,
+          "indexed": false
+        },
+        {
+          "order": 9,
+          "name": "Blinding",
+          "type": "Choice",
+          "required": true,
+          "indexed": false,
+          "choicesOrLookup": "Open-label;Blinded;Partially blinded;Not applicable"
+        },
+        {
+          "order": 10,
+          "name": "RecruitmentStatus",
+          "type": "Choice",
+          "required": false,
+          "indexed": false,
+          "choicesOrLookup": "Not started;Open;Paused;Closed"
+        },
+        {
+          "order": 11,
+          "name": "PrimarySSC",
+          "type": "Person",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 12,
+          "name": "StartDate",
+          "type": "Date",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 13,
+          "name": "ExpectedEndDate",
+          "type": "Date",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 14,
+          "name": "PharmacyRequired",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 15,
+          "name": "LabRequired",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 16,
+          "name": "SourceModel",
+          "type": "Choice",
+          "required": true,
+          "indexed": false,
+          "choicesOrLookup": "Paper source;Electronic source;Hybrid;Blank templates only in SharePoint"
+        },
+        {
+          "order": 17,
+          "name": "Notes",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "name": "VisitWorkflow",
+      "columns": [
+        {
+          "order": 1,
+          "name": "VisitKey",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "Study+PID+Visit+Date permanent key"
+        },
+        {
+          "order": 2,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 3,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "No participant name"
+        },
+        {
+          "order": 4,
+          "name": "Visit",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 5,
+          "name": "PlannedDate",
+          "type": "Date",
+          "required": false,
+          "indexed": true,
+          "notes": "Derived from VisitAdmin"
+        },
+        {
+          "order": 6,
+          "name": "ActualVisitDate",
+          "type": "Date",
+          "required": false,
+          "indexed": true,
+          "notes": "Derived from VisitAdmin/VisitClinicalStatus; not manually backdated"
+        },
+        {
+          "order": 7,
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Scheduled;Arrived;Visit In Progress;Visit Complete;Ready for QC;QC In Progress;QC Returned;QC Passed;Ready for EDC;EDC In Progress;EDC Complete;PI Action;Closed",
+          "notes": "Automation-managed consolidated status; routine users do not directly edit"
+        },
+        {
+          "order": 8,
+          "name": "ReceptionOwner",
+          "type": "Person",
+          "required": false,
+          "indexed": false,
+          "notes": "Derived from VisitAdmin"
+        },
+        {
+          "order": 9,
+          "name": "VisitOwner",
+          "type": "Person",
+          "required": false,
+          "indexed": false,
+          "notes": "Derived from VisitClinicalStatus"
+        },
+        {
+          "order": 10,
+          "name": "QCStatus",
+          "type": "Choice",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "Not Ready;Ready;In Progress;Returned;Passed",
+          "notes": "Derived from QCFinding/QC workflow"
+        },
+        {
+          "order": 11,
+          "name": "QCReadyAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 12,
+          "name": "QCStartedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 13,
+          "name": "QCPassedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 14,
+          "name": "EDCStatus",
+          "type": "Choice",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "Not Ready;Ready;In Progress;Complete",
+          "notes": "Derived from EDCStatus"
+        },
+        {
+          "order": 15,
+          "name": "EDCReadyAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp from EDCStatus"
+        },
+        {
+          "order": 16,
+          "name": "EDCStartedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp from EDCStatus"
+        },
+        {
+          "order": 17,
+          "name": "EDCCompletedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp from EDCStatus"
+        },
+        {
+          "order": 18,
+          "name": "PIActionRequired",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true,
+          "notes": "Derived from PIAction"
+        },
+        {
+          "order": 19,
+          "name": "PIActionStatus",
+          "type": "Choice",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "Not Required;Pending;Complete",
+          "notes": "Derived from PIAction"
+        },
+        {
+          "order": 20,
+          "name": "LabReviewRequired",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 21,
+          "name": "LabReviewStatus",
+          "type": "Choice",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "Not Required;Pending;Complete"
+        },
+        {
+          "order": 22,
+          "name": "OpenQueryCount",
+          "type": "Number",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 23,
+          "name": "DeviationFlag",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 24,
+          "name": "CloseEligible",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true,
+          "notes": "Calculated/automation-managed"
+        },
+        {
+          "order": 25,
+          "name": "ClosedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 26,
+          "name": "ReopenReason",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Required on reopen"
+        }
+      ]
+    },
+    {
+      "name": "VisitAdmin",
+      "columns": [
+        {
+          "order": 1,
+          "name": "VisitAdminID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "Unique administrative visit record"
+        },
+        {
+          "order": 2,
+          "name": "VisitKey",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "VisitWorkflow:VisitKey"
+        },
+        {
+          "order": 3,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 4,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "No participant name"
+        },
+        {
+          "order": 5,
+          "name": "Visit",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 6,
+          "name": "PlannedDate",
+          "type": "Date",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 7,
+          "name": "ScheduledTime",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 8,
+          "name": "AttendanceStatus",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Scheduled;Arrived;No Show;Rescheduled;Cancelled"
+        },
+        {
+          "order": 9,
+          "name": "ArrivalAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": true,
+          "notes": "Prefer button/server timestamp"
+        },
+        {
+          "order": 10,
+          "name": "DepartureAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Prefer button/server timestamp"
+        },
+        {
+          "order": 11,
+          "name": "RescheduledTo",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 12,
+          "name": "CTAOwner",
+          "type": "Person",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 13,
+          "name": "ReceptionOwner",
+          "type": "Person",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 14,
+          "name": "AdminNotes",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Operational only; no clinical narrative"
+        },
+        {
+          "order": 15,
+          "name": "ChangeReason",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Required after protected milestone/correction"
+        }
+      ]
+    },
+    {
+      "name": "VisitClinicalStatus",
+      "columns": [
+        {
+          "order": 1,
+          "name": "VisitClinicalID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "Unique clinical status record"
+        },
+        {
+          "order": 2,
+          "name": "VisitKey",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "VisitWorkflow:VisitKey"
+        },
+        {
+          "order": 3,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 4,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "No participant name"
+        },
+        {
+          "order": 5,
+          "name": "Visit",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 6,
+          "name": "VisitOwner",
+          "type": "Person",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 7,
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Not Started;In Progress;Complete;Unable to Complete;Entered in Error"
+        },
+        {
+          "order": 8,
+          "name": "StartedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": true,
+          "notes": "Prefer server timestamp"
+        },
+        {
+          "order": 9,
+          "name": "CompletedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": true,
+          "notes": "Prefer server timestamp"
+        },
+        {
+          "order": 10,
+          "name": "ReadyForQC",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true,
+          "notes": "Triggers QC routing when administrative prerequisites also met"
+        },
+        {
+          "order": 11,
+          "name": "CriticalIssueFlag",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true,
+          "notes": "If yes, route exception/safety escalation"
+        },
+        {
+          "order": 12,
+          "name": "DeviationFlag",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 13,
+          "name": "ClinicalNotes",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Status context only; not replacement for source"
+        },
+        {
+          "order": 14,
+          "name": "ChangeReason",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Required for correction after completion"
+        }
+      ]
+    },
+    {
+      "name": "QCFinding",
+      "columns": [
+        {
+          "order": 1,
+          "name": "FindingID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 2,
+          "name": "VisitKey",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "VisitWorkflow:VisitKey"
+        },
+        {
+          "order": 3,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 4,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 5,
+          "name": "Visit",
+          "type": "Single line text",
+          "required": true,
+          "indexed": false
+        },
+        {
+          "order": 6,
+          "name": "Category",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Consent;Source;Lab;Safety;Visit procedure;EDC;IP;Delegation;Training;Other"
+        },
+        {
+          "order": 7,
+          "name": "Description",
+          "type": "Multiple lines text",
+          "required": true,
+          "indexed": false
+        },
+        {
+          "order": 8,
+          "name": "Severity",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Critical;High;Moderate;Routine",
+          "notes": "Operational risk classification"
+        },
+        {
+          "order": 9,
+          "name": "RaisedBy",
+          "type": "Person",
+          "required": true,
+          "indexed": false
+        },
+        {
+          "order": 10,
+          "name": "RaisedAt",
+          "type": "Date & Time",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 11,
+          "name": "AssignedTo",
+          "type": "Person",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 12,
+          "name": "DueDate",
+          "type": "Date",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 13,
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Open;Returned;In Progress;Resolved;Verified;Closed"
+        },
+        {
+          "order": 14,
+          "name": "Resolution",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 15,
+          "name": "ResolvedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 16,
+          "name": "RecurrenceFlag",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 17,
+          "name": "CAPARequired",
+          "type": "Yes/No",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 18,
+          "name": "CAPARef",
+          "type": "Single line text",
+          "required": false,
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "name": "EDCStatus",
+      "columns": [
+        {
+          "order": 1,
+          "name": "DataRecordID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 2,
+          "name": "VisitKey",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "VisitWorkflow:VisitKey"
+        },
+        {
+          "order": 3,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 4,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 5,
+          "name": "Visit",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 6,
+          "name": "ReadyAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 7,
+          "name": "StartedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 8,
+          "name": "CompletedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 9,
+          "name": "DataEnteredBy",
+          "type": "Person",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 10,
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Not Ready;Ready;In Progress;Complete;Returned"
+        },
+        {
+          "order": 11,
+          "name": "OpenQueryCount",
+          "type": "Number",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 12,
+          "name": "QueryStatus",
+          "type": "Choice",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "None;Open;In Progress;Resolved"
+        },
+        {
+          "order": 13,
+          "name": "LastQueryDate",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 14,
+          "name": "CorrectionReason",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Required when reverting completed status"
+        }
+      ]
+    },
+    {
+      "name": "PIAction",
+      "columns": [
+        {
+          "order": 1,
+          "name": "PIActionID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 2,
+          "name": "VisitKey",
+          "type": "Lookup",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "VisitWorkflow:VisitKey"
+        },
+        {
+          "order": 3,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 4,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": false,
+          "indexed": true,
+          "notes": "Only where participant-specific"
+        },
+        {
+          "order": 5,
+          "name": "ActionType",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Eligibility;Lab Review;Clinical Significance;AE Assessment;SAE Assessment;Deviation Review;Other"
+        },
+        {
+          "order": 6,
+          "name": "RequiredAt",
+          "type": "Date & Time",
+          "required": true,
+          "indexed": true,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 7,
+          "name": "DueDate",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": true
+        },
+        {
+          "order": 8,
+          "name": "Investigator",
+          "type": "Person",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 9,
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Pending;In Progress;Complete;Not Required;Entered in Error"
+        },
+        {
+          "order": 10,
+          "name": "CompletedAt",
+          "type": "Date & Time",
+          "required": false,
+          "indexed": true,
+          "notes": "Automation timestamp"
+        },
+        {
+          "order": 11,
+          "name": "Outcome",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Clinical/operational summary only; source remains authoritative"
+        },
+        {
+          "order": 12,
+          "name": "ClinicalSignificance",
+          "type": "Choice",
+          "required": false,
+          "indexed": false,
+          "choicesOrLookup": "Not Applicable;Not Clinically Significant;Clinically Significant"
+        },
+        {
+          "order": 13,
+          "name": "SourceReference",
+          "type": "Single line text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 14,
+          "name": "ChangeReason",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Required if completed action is corrected"
+        }
+      ]
+    },
+    {
+      "name": "WorkflowAudit",
+      "columns": [
+        {
+          "order": 1,
+          "name": "AuditEventID",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true,
+          "notes": "Unique event id"
+        },
+        {
+          "order": 2,
+          "name": "EntityType",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "VisitWorkflow;AttendanceTimesheet;VisitDocumentIssueLog;QCFinding;EDCStatus;PIAction;TrainingReadiness;DelegationActivation;EquipmentRegister;ExceptionCAPA;RegulatoryApprovalRegister;RoleAssignment;SystemAccess"
+        },
+        {
+          "order": 3,
+          "name": "EntityKey",
+          "type": "Single line text",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 4,
+          "name": "StudyID",
+          "type": "Lookup",
+          "required": false,
+          "indexed": true,
+          "choicesOrLookup": "StudyMaster:StudyID"
+        },
+        {
+          "order": 5,
+          "name": "ParticipantID",
+          "type": "Single line text",
+          "required": false,
+          "indexed": true,
+          "notes": "No name"
+        },
+        {
+          "order": 6,
+          "name": "EventType",
+          "type": "Choice",
+          "required": true,
+          "indexed": true,
+          "choicesOrLookup": "Created;Status Change;Correction;Reopen;Close;Print;Approval;Access Grant;Access Change;Access Removal;Other"
+        },
+        {
+          "order": 7,
+          "name": "FieldName",
+          "type": "Single line text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 8,
+          "name": "OldValue",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 9,
+          "name": "NewValue",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false
+        },
+        {
+          "order": 10,
+          "name": "ChangedBy",
+          "type": "Person",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "order": 11,
+          "name": "ChangedAt",
+          "type": "Date & Time",
+          "required": true,
+          "indexed": true,
+          "notes": "Automation/server timestamp"
+        },
+        {
+          "order": 12,
+          "name": "Reason",
+          "type": "Multiple lines text",
+          "required": false,
+          "indexed": false,
+          "notes": "Mandatory for controlled corrections/reopens"
+        },
+        {
+          "order": 13,
+          "name": "SourceApp",
+          "type": "Choice",
+          "required": true,
+          "indexed": false,
+          "choicesOrLookup": "Power Apps;Power Automate;SharePoint;Admin;Other"
+        },
+        {
+          "order": 14,
+          "name": "CorrelationID",
+          "type": "Single line text",
+          "required": false,
+          "indexed": true,
+          "notes": "Links related automated events"
+        }
+      ]
+    }
+  ]
+}

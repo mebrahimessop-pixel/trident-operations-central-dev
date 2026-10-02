@@ -1,0 +1,25 @@
+# Secrets and credentials
+.env
+.env.*
+*.secret
+*.pem
+*.pfx
+*.key
+secrets/
+credentials/
+
+# Local/runtime data
+outputs/raw/
+outputs/private/
+**/node_modules/
+*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local exports and temporary files
+*.zip
+*.bak
+*.tmp

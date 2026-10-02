@@ -1,0 +1,33 @@
+{
+  "source": {
+    "name": "Trident_Clinical_Microsoft_Lists_Build_Pack_v1.2.xlsx",
+    "sharePointDocumentId": "01KBG4N2IHGDTZJ54J5BFJKVLB26UEGTQL",
+    "buildOrder": 1
+  },
+  "list": {
+    "name": "StudyMaster",
+    "purpose": "One record per protocol/site study",
+    "primaryKey": "StudyID",
+    "initialAccess": "Broad read; management/SSC edit",
+    "notes": "Lookup source for study-scoped lists",
+    "columns": [
+      {"order": 1, "name": "StudyID", "type": "Single line text", "required": true, "indexed": true, "notes": "Protocol/site-friendly short key"},
+      {"order": 2, "name": "ProtocolNumber", "type": "Single line text", "required": true, "indexed": true},
+      {"order": 3, "name": "StudyName", "type": "Single line text", "required": true, "indexed": false},
+      {"order": 4, "name": "Sponsor", "type": "Single line text", "required": false, "indexed": false},
+      {"order": 5, "name": "CRO", "type": "Single line text", "required": false, "indexed": false},
+      {"order": 6, "name": "SiteNumber", "type": "Single line text", "required": false, "indexed": false},
+      {"order": 7, "name": "Status", "type": "Choice", "required": true, "indexed": true, "choicesOrLookup": "Pipeline;Start-up;Active;Paused;Closing;Closed;Archived"},
+      {"order": 8, "name": "PI", "type": "Person", "required": true, "indexed": false},
+      {"order": 9, "name": "Blinding", "type": "Choice", "required": true, "indexed": false, "choicesOrLookup": "Open-label;Blinded;Partially blinded;Not applicable"},
+      {"order": 10, "name": "RecruitmentStatus", "type": "Choice", "required": false, "indexed": false, "choicesOrLookup": "Not started;Open;Paused;Closed"},
+      {"order": 11, "name": "PrimarySSC", "type": "Person", "required": false, "indexed": false},
+      {"order": 12, "name": "StartDate", "type": "Date", "required": false, "indexed": false},
+      {"order": 13, "name": "ExpectedEndDate", "type": "Date", "required": false, "indexed": false},
+      {"order": 14, "name": "PharmacyRequired", "type": "Yes/No", "required": true, "indexed": false},
+      {"order": 15, "name": "LabRequired", "type": "Yes/No", "required": true, "indexed": false},
+      {"order": 16, "name": "SourceModel", "type": "Choice", "required": true, "indexed": false, "choicesOrLookup": "Paper source;Electronic source;Hybrid;Blank templates only in SharePoint"},
+      {"order": 17, "name": "Notes", "type": "Multiple lines text", "required": false, "indexed": false}
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+name: Validate agent coordination
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate coordination state
+        shell: pwsh
+        run: |
+          $path = 'outputs/AI_AGENT_STATUS.json'
+          $state = Get-Content $path -Raw | ConvertFrom-Json
+          $required = @('protocolVersion','environment','status','handoffSequence','nextAction','handoff')
+          foreach ($name in $required) {
+            if ($null -eq $state.$name) { throw "Missing required status field: $name" }
+          }
+          if ($state.environment -ne 'DEV') { throw 'Coordination state must remain DEV.' }
+          $allowed = @('HANDOFF_READY','CODEX_ACTIVE','CLAUDE_ACTIVE','ACTIVE')
+          if ($allowed -notcontains [string]$state.status) { throw "Unexpected status: $($state.status)" }
+          if ($state.handoff.maxWorkUnitsPerSession -gt 5) { throw 'Work-unit cap exceeds the agreed safety limit.' }
+          Write-Host "Coordination state valid: $($state.status), sequence $($state.handoffSequence)"
