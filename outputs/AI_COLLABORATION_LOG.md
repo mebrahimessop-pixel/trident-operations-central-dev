@@ -1918,3 +1918,59 @@ Logic: CloseEligible = true when trigger.EDCStatus = Complete AND parent.QCStatu
 
 Run F4-T1 through F4-T6 activation tests, then build Flows 2, 1, 3, 5 via API.
 
+
+## 2026-10-02 21:15 SAST -- CLAUDE CODE -- Seq 16: Flows 2, 1, 3, 5 built and created via Power Automate API
+
+**Context:** Continuing from Seq 15b. All four roll-up flows built from scratch using Python JSON generator (build_flows.py) and posted to the Power Automate REST API.
+
+### Flows created
+
+| Flow | Display Name | Flow ID | State |
+|------|-------------|---------|-------|
+| Flow 2 (VCS) | Trident DEV - VisitClinicalStatus roll-up | cef5b483-f7b1-4cae-81ff-471b35ba9007 | Started |
+| Flow 1 (VA)  | Trident DEV - VisitAdmin roll-up           | e512bee2-b2f8-49bd-a073-2bc7bc2e6522 | Started |
+| Flow 3 (QCF) | Trident DEV - QCFinding roll-up            | d0612b3d-6817-42d6-8c1e-a40a4f017f80 | Started |
+| Flow 5 (PIA) | Trident DEV - PIAction roll-up             | 10d0d1aa-6b4c-4894-a663-1382ae0c2d6f | Started |
+
+### Design decisions
+
+**Flow 2 (VCS) — VisitClinicalStatus roll-up**
+- Trigger: GetOnUpdatedItems on VCS list
+- Reads parent VisitWorkflow row, evaluates 3-level status if expression
+- Status logic: Ready for QC (Complete+ReadyForQC=true) > Visit Complete (Complete) > Visit In Progress (InProgress+Arrived) > keep current
+- Sets ActualVisitDate (first occurrence only), QCReadyAt (first QC-ready only), CloseEligible=false
+
+**Flow 1 (VA) — VisitAdmin roll-up**
+- Trigger: GetOnUpdatedItems on VA list
+- Sets Arrived status when AttendanceStatus=Arrived and parent is Scheduled
+- Sets Scheduled (no change) for No Show/Cancelled
+- Sets ActualVisitDate from ArrivalTime on first arrival
+
+**Flow 3 (QCF) — QCFinding roll-up**
+- Trigger: GetOnUpdatedItems on QCF list
+- Computes QCStatus from all findings: Returned > In Progress > Passed > Not Ready
+- 3-level status if: QC Returned > QC In Progress > QC Passed > keep current
+- Sets QCStartedAt and QCPassedAt timestamps on first occurrence
+- Tracks OpenQueryCount
+
+**Flow 5 (PIA) — PIAction roll-up**
+- Trigger: GetOnUpdatedItems on PIA list
+- InitializeVariable restriction: moved all var init to top level; VisitKey null guard uses Terminate action instead of nested condition
+- PIActionStatus: Pending (pending>0) > Complete (actionRequired) > Not Required
+- Sets CloseEligible=true when EDCStatus=Complete AND QCStatus=Passed AND PIActionStatus=Complete/Not Required
+
+### Technical notes
+
+- POST API validation:  property NOT allowed in OpenApiConnection action inputs (trigger only)
+- Choice fields in WorkflowAudit require  suffix: , , 
+- Required fields for WorkflowAudit PostItem: , 
+-  actions cannot be nested in conditions -- Power Automate restriction enforced at POST time
+- Connection reference:  (from Flow 4)
+
+### Next actions
+
+1. Run F4-T1 through F4-T6 activation tests on all 5 flows in DEV tenant (requires user to trigger via SharePoint list changes or Power Automate test runner)
+2. P0-3 WorkflowAudit append-only permissions (pending user confirmation)
+3. P1-3 auto_timestamps, P1-4 duplicate_detection, P1-5 chronology_validation (Power Apps formula changes)
+4. UAT R-01 to R-15 after all flows and formulas confirmed
+
