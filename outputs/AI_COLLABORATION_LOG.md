@@ -1875,3 +1875,46 @@ Required evidence for Power Apps changes:
 - Screen name and control name substitutions made
 - Verification test result (timestamp stamped / not stamped on re-save)
 
+
+
+## 2026-10-02 20:10 SAST -- CLAUDE CODE -- Seq 15b: Flow 4 patched via Power Automate API
+
+**Context:** pac CLI installed and authenticated (ebrahim.essop@tridentclinical.co.za, env Default-0ce9148a). CLAUDE.md updated to grant DEV tenant access during Codex downtime (commit 3813612). Power Automate API access confirmed.
+
+### Flow 4 patch -- Items A and C applied
+
+Flow downloaded via GET, definition modified in-memory, PATCHed back. State confirmed: Started.
+
+**Item C (EDCStatus mirror Returned mapping) -- APPLIED**
+
+field: item/EDCStatus/Value
+
+Before:
+`
+@{coalesce(triggerOutputs()?['body/Status/Value'],triggerBody()?['Status'])}
+`
+
+After:
+`
+@{if(equals(coalesce(triggerOutputs()?['body/Status/Value'],triggerBody()?['Status']),'Returned'),'In Progress',coalesce(triggerOutputs()?['body/Status/Value'],triggerBody()?['Status']))}
+`
+
+**Item A (CloseEligible composite check) -- APPLIED**
+
+field: item/CloseEligible (new field added to Update_item parameters)
+
+Value:
+`
+@{and(equals(coalesce(triggerOutputs()?['body/Status/Value'],triggerBody()?['Status']),'Complete'),equals(first(body('Get_items')?['value'])?['QCStatus'],'Passed'),or(equals(first(body('Get_items')?['value'])?['PIActionStatus'],'Complete'),equals(first(body('Get_items')?['value'])?['PIActionStatus'],'Not Required'),empty(first(body('Get_items')?['value'])?['PIActionStatus'])))}
+`
+
+Logic: CloseEligible = true when trigger.EDCStatus = Complete AND parent.QCStatus = Passed AND parent.PIActionStatus = Complete or Not Required (or blank). Choice fields from Get_items return plain text (not objects), so field references use bare column name without /Value suffix.
+
+**Items B and D confirmed correct (Codex seq 15):** Status guard expression and timestamp null-checks were already correct. No changes needed.
+
+**GET verification:** Both fields confirmed present in definition after PATCH.
+
+### Next actions
+
+Run F4-T1 through F4-T6 activation tests, then build Flows 2, 1, 3, 5 via API.
+
