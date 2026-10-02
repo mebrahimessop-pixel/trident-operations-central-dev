@@ -14,7 +14,11 @@ Before acting, read:
 - `config/lists/achieve-ram-pilot.json`
 - `infra/provision-dev-lists.ps1`
 
-Claude Code owns retrospective review and correction of local implementation files, documentation, tests, formulas, and configuration assets. Codex owns prospective feature work, tenant changes, cloud deployment, and end-to-end verification. Do not log into or modify Azure, SharePoint, Power Apps, or Power Automate from Claude Code.
+Claude Code owns retrospective review and correction of local implementation files, documentation, tests, formulas, and configuration assets. Codex owns prospective feature work, tenant changes, cloud deployment, and end-to-end verification.
+
+## Codex downtime exception
+
+When Codex is unavailable (weekly cap, outage, or explicit user instruction), Claude Code may make DEV tenant changes via the Power Automate REST API, pac CLI, or PnP PowerShell. Scope: DEV environment only. No production writes. Access tokens must remain in script variables — never printed to output. All changes must be recorded in `outputs/AI_COLLABORATION_LOG.md` with evidence before the session ends.
 
 Never request, expose, store, or transmit passwords, client secrets, access tokens, or personal data. Work only with fictitious DEV UAT data. Do not touch production. Use unified diffs for local changes. Record every review and finding in `outputs/AI_COLLABORATION_LOG.md`. A recommendation is not a deployment, and a finding is not verified without direct evidence.
 
