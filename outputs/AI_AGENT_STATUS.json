@@ -15,8 +15,8 @@
   "nextAction": "User selects TridentOpsCentral_luna_fixed.msapp in Power Apps. Codex then saves it over the existing DEV draft, runs App Checker and visual checks for EDC/navigation, and requests explicit approval before Publish.",
   "sessionSummary": "Sequence 23 resumed after capacity returned. The staged source initially exposed indentation errors, which were corrected. Power Apps CLI then packed the repaired 1,977,897-byte .msapp successfully. The DEV published version remains unchanged and production writes remain disabled.",
   "evidence": "Pack completed with only the expected checksum warning for intentionally edited unpacked sources. Output: work\\TridentOpsCentral_luna_fixed.msapp; SHA-256 c7f736336a5d9f728aa1175ed707ef568cac803e79beebc9e97e0cf30ec788db.",
-  "lastHeartbeatAt": "2026-10-03T18:02:14+02:00",
-  "updatedAt": "2026-10-03T18:02:14+02:00",
+  "lastHeartbeatAt": "2026-10-03T18:20:00+02:00",
+  "updatedAt": "2026-10-03T18:20:00+02:00",
   "codex": {
     "status": "WAITING_USER",
     "handoffTrigger": "weekly_cap",
@@ -32,10 +32,10 @@
     "handoffTrigger": "manual",
     "usagePolicy": "stop_at_work_unit_cap",
     "maxWorkUnitsPerSession": 5,
-    "lastCompleted": "Seq 21: EDC roll-up flow created+enabled, EDC-T1/T2 PASS. All 5 flows live.",
-    "nextAction": "Codex to handle tenant deploy steps: import .msapp, run set_wa_permissions.ps1, smoke-test, run UAT R-01 to R-15.",
+    "lastCompleted": "Seq 21+: P0-3 WorkflowAudit permissions applied and verified (5 role assignments confirmed). All P0 findings now clear.",
+    "nextAction": "Codex owns app import/validation/publish (UA-1) and UAT R-01 to R-15.",
     "tenantWorkAllowed": true,
-    "workUnitsCompleted": 25
+    "workUnitsCompleted": 26
   },
   "luna": {
     "status": "HANDOFF_READY",
@@ -57,7 +57,7 @@
   "actionStates": {
     "P0-1_EDC_guard_QueryStatus_fix": { "status": "COMPLETED_VERIFIED", "owner": "codex", "blockedOn": null },
     "P0-2_VisitWorkflow_rollup_flows": { "status": "COMPLETED_VERIFIED", "owner": "claudeCode", "blockedOn": null },
-    "P0-3_WorkflowAudit_append_only": { "status": "SCRIPT_READY_BLOCKED_AUTH", "owner": "claudeCode", "blockedOn": "Must run set_wa_permissions.ps1 in an interactive terminal (browser auth). File: C:\\Users\\mebra\\.claude\\jobs\\3c54bf7b\\set_wa_permissions.ps1" },
+    "P0-3_WorkflowAudit_append_only": { "status": "COMPLETED_VERIFIED", "owner": "claudeCode", "blockedOn": null },
     "P1-1_PIAction_completion_guard": { "status": "COMPLETED_VERIFIED", "owner": "codex", "blockedOn": null },
     "P1-2_QCFinding_closure_guard": { "status": "COMPLETED_VERIFIED", "owner": "codex", "blockedOn": null },
     "P1-3_auto_timestamps": { "status": "IMPLEMENTED_IMPORT_REQUIRED", "owner": "claudeCode", "blockedOn": "Import TridentOpsCentral_updated.msapp via make.powerapps.com" },
@@ -75,16 +75,9 @@
       "instructions": "On the open Power Apps import page, select C:\\Users\\mebra\\Documents\\Codex\\2026-09-21\\we-are-resuming-an-existing-trident\\work\\TridentOpsCentral_luna_fixed.msapp. Codex will save it over the existing DEV draft and validate it. Do not Publish until the user explicitly approves after validation.",
       "blocks": ["P1-3", "P1-4", "P1-5", "P2-1"]
     },
-    {
-      "id": "UA-2",
-      "priority": "P0",
-      "action": "Run WorkflowAudit permissions script",
-      "instructions": "In an interactive PowerShell 5.1 terminal: & 'C:\\Users\\mebra\\.claude\\jobs\\3c54bf7b\\set_wa_permissions.ps1' — browser will open for SharePoint auth",
-      "blocks": ["P0-3"]
-    }
   ],
   "finalLaunchGate": {
-    "claudeCode": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "P0-3 blocked UA-2", "P1_FINDINGS": "P1-3/4/5 blocked UA-1", "PRODUCTION_APPROVAL": "REQUIRED" },
+    "claudeCode": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "ALL_CLEAR", "P1_FINDINGS": "P1-3/4/5 blocked UA-1", "PRODUCTION_APPROVAL": "REQUIRED" },
     "codex": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "OPEN", "P1_FINDINGS": "OPEN", "PRODUCTION_APPROVAL": "REQUIRED" }
   },
   "handoff": {

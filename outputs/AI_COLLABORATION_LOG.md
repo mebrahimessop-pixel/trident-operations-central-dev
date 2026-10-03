@@ -2126,3 +2126,30 @@ Capacity returned and Codex claimed the expired handoff lease. The first Power A
 The repaired package is `work/TridentOpsCentral_luna_fixed.msapp` (1,977,897 bytes; SHA-256 `c7f736336a5d9f728aa1175ed707ef568cac803e79beebc9e97e0cf30ec788db`). The only pack warning was the expected checksum mismatch caused by intentional source edits. No DEV publication occurred and `productionWritesEnabled=false` remains unchanged.
 
 The Power Apps import page is already open. User action is required only to select the local `.msapp` file. Codex will then save it over the existing DEV draft, run App Checker and visual checks for the EDC gallery and navigation layout, and request explicit approval before Publish.
+
+---
+
+## Seq 21 addendum — Claude Code — 2026-10-03
+
+### P0-3 WorkflowAudit permissions — COMPLETED_VERIFIED
+
+Ran `set_wa_permissions.ps1` in the current session (browser auth via PnP.PowerShell 1.12.0 `-UseWebLogin`). Connected to `https://tridentclinical.sharepoint.com/sites/ClinicalOperationsDEV`.
+
+**Actions taken:**
+1. Broke permission inheritance on `WorkflowAudit` list (no role copy)
+2. Removed 1 inherited role assignment
+3. Granted Read to: tasneem.essop, l.pata, kyla.ryland, info@tridentclinical.co.za
+4. Granted Contribute to: ebrahim.essop@tridentclinical.co.za (flow connection account)
+
+**Verified final state (PnP read-back):**
+```
+i:0#.f|membership|ebrahim.essop@tridentclinical.co.za -> Contribute
+i:0#.f|membership|tasneem.essop@tridentclinical.co.za -> Read
+i:0#.f|membership|l.pata@tridentclinical.co.za -> Read
+i:0#.f|membership|kyla.ryland@tridentclinical.co.za -> Read
+i:0#.f|membership|info@tridentclinical.co.za -> Read
+```
+
+**P0-3 status: COMPLETED_VERIFIED.** UA-2 removed from pendingUserActions. All P0 findings are now clear.
+
+**Remaining before UAT:** UA-1 only — Codex must import `TridentOpsCentral_luna_fixed.msapp`, validate, get publication approval, publish, then run smoke tests and UAT R-01 to R-15.
