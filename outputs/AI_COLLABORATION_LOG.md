@@ -1974,3 +1974,132 @@ Run F4-T1 through F4-T6 activation tests, then build Flows 2, 1, 3, 5 via API.
 3. P1-3 auto_timestamps, P1-4 duplicate_detection, P1-5 chronology_validation (Power Apps formula changes)
 4. UAT R-01 to R-15 after all flows and formulas confirmed
 
+## 2026-10-03 12:44 SAST -- CODEX -- Seq 19: first live roll-up test and timestamp blocker
+
+**F4-T1 execution:** Updated fictitious `DEV-UAT-20260930-EDC-001` from Complete to Ready. The EDC trigger and `Get_items` parent lookup succeeded, but `Update_item` failed before writing the parent.
+
+**Evidence:** Power Automate run `08584105823951620198809720643CU04` (12:48 PM SAST) failed with `OpenApiOperationParameterTypeConversionFailed`: `item/EDCStartedAt` received runtime value `""`, which is invalid for SharePoint `String/date-time`.
+
+**Finding:** The existing blank-safe expressions preserve the parent value as an empty string when a timestamp has not yet been set. The designer also rejects an attempted `null` branch as an invalid datetime. The safe fix is structural: use status-specific Update item actions (or API-level definitions) so a timestamp field is omitted entirely unless that status transition stamps it. Do not send `""` or `null` to SharePoint datetime fields.
+
+**Current state:** The invalid browser edits were discarded; no replacement was saved. F4 remains Started but is not UAT-verified. Parent `VisitWorkflow` remained unchanged after the failed run. All further roll-up UAT is blocked until the timestamp update pattern is corrected across the five flows.
+
+
+### Claude entry — 2026-10-03 — SAST
+
+Status: `IMPLEMENTED`
+
+#### This session
+
+Applied the timestamp blocker fix (from seq 19) and ran all activation tests; patched all 4 roll-up flows with two structural fixes that were blocking them.
+
+**Fix 1 — Full expression syntax for nullable DateTime fields**
+Flows were using @{if(..., utcNow(), ...)} (string-interpolation mode) which coerces null to "", causing SharePoint's OpenApiOperationParameterTypeConversionFailed error. Changed to @if(..., utcNow(), ...) (bare expression) which preserves JSON null type. Applied to QCReadyAt, ActualVisitDate (VCS), RaisedAt, ResolvedAt, QCStartedAt, QCPassedAt (QCF), RequiredAt, CompletedAt (PIA).
+
+**Fix 2 — Lookup column filter in child-list GetItems**
+QCFinding and PIAction lists have VisitKey as a Lookup column. The filter VisitKey eq '@{...}' was sending a text comparison against a Lookup column, which always returns 0 items. Replaced with VisitKeyId eq @{triggerOutputs()?['body/VisitKey/Id']} (integer, no quotes). This is required by the SharePoint OData engine for Lookup columns.
+
+**Activation test results**
+
+All tests passed after fixes:
+
+| Test | Trigger | Expected VW Change | Result |
+|------|---------|-------------------|--------|
+| VA-T1 | AttendanceStatus=Arrived | Status=Arrived, ActualVisitDate stamped | PASS |
+| VCS-T1 | Status=In Progress | Status=Visit In Progress | PASS |
+| VCS-T2 | Status=Complete, ReadyForQC=false | Status=Visit Complete | PASS |
+| VCS-T3 | Status=Complete, ReadyForQC=true | Status=Ready for QC, QCReadyAt stamped | PASS |
+| QCF-T1 | Status=Open | Status=QC In Progress, OpenQueryCount=1 | PASS |
+| QCF-T2 | Status=Returned | Status=QC Returned | PASS |
+| QCF-T3 | Status=Closed | QCStatus=Passed, Status=QC Passed, OpenQueryCount=0 | PASS |
+| PIA-T1 | No VisitKey (null guard) | PIActionStatus unchanged | PASS |
+| PIA-T2 | Status=Pending | Status=PI Action, PIActionStatus=Pending | PASS |
+| PIA-T3 | Status=Complete | PIActionStatus=Complete, CloseEligible=true | PASS |
+
+WorkflowAudit progression rows verified: QCStatus → In Progress → Returned → Passed, PIActionStatus → Pending → Complete. 18 total audit rows for UAT-TEST-VK-001.
+
+**P0-3 WorkflowAudit permissions — BLOCKED (interactive auth required)**
+
+Script written at `C:\Users\mebra\.claude\jobs\3c54bf7b\set_wa_permissions.ps1`. The SharePoint REST API returns 401 for Bearer tokens obtained via z account get-access-token for the SharePoint resource — consistent with a Conditional Access Policy requiring browser-interactive authentication for SP. The script uses Connect-PnPOnline -UseWebLogin (PnP.PowerShell v1.12.0, PS 5.1 compatible). User must run the script in an interactive terminal session with browser access. It will break inheritance on WorkflowAudit, clear inherited groups, grant Read to the 4 named users and Contribute to the flow connection account.
+
+**P1-3/P1-4/P1-5 Power Apps formula changes — IMPLEMENTED (manual import required)**
+
+Modified 4 screen source files in the unpacked app:
+
+Screen3.fx.yaml (VCS):
+- `StartedAt_DataCard1.Default`: Auto-stamps Now() when Status becomes "In Progress" and StartedAt is blank
+- `CompletedAt_DataCard1.Default`: Auto-stamps Now() when Status becomes "Complete" and CompletedAt is blank
+- `DetailSaveBtn2.OnSelect`: P1-5 chronology check (CompletedAt >= StartedAt), P1-4 duplicate check on Title, then SubmitForm(CollectionForm2)
+
+Screen4.fx.yaml (QCF):
+- `RaisedAt_DataCard1.Default`: Auto-stamps Now() when Status becomes "Open" and RaisedAt is blank
+- `ResolvedAt_DataCard1.Default`: Auto-stamps Now() when Status becomes "Closed" and ResolvedAt is blank
+- `DetailSaveBtn3.OnSelect`: P1-5 chronology check (ResolvedAt >= RaisedAt), P1-4 duplicate check on Title, then SubmitForm(CollectionForm3)
+
+Screen5.fx.yaml (EDC):
+- `StartedAt_DataCard2.Default`: Auto-stamps Now() when Status becomes "In Progress" and StartedAt is blank
+- `CompletedAt_DataCard2.Default`: Auto-stamps Now() when Status becomes "Complete" and CompletedAt is blank
+- `DetailSaveBtn4.OnSelect`: P1-5 chronology check, P1-4 duplicate check on Title, then SubmitForm(CollectionForm4)
+
+Screen6.fx.yaml (PIA):
+- `RequiredAt_DataCard1.Default`: Auto-stamps Now() on new records where RequiredAt is blank
+- `CompletedAt_DataCard3.Default`: Auto-stamps Now() when Status becomes "Complete" and CompletedAt is blank
+- Added `PIASaveBtn.OnSelect`: P1-5 check (CompletedAt >= RequiredAt), P1-4 duplicate check on Title, then SubmitForm(Form2)
+
+Packed .msapp: `C:\Users\mebra\.claude\jobs\3c54bf7b\TridentOpsCentral_updated.msapp`
+
+**To deploy:** Open https://make.powerapps.com → Apps → "Trident Operations Central DEV" → Edit → File → Save As → Import from file → select TridentOpsCentral_updated.msapp, or use Open → Browse → select file, then Publish.
+
+#### Next steps for Codex (from 2026-10-07)
+
+1. Import the updated .msapp via Power Apps Studio maker portal (file path above)
+2. Run set_wa_permissions.ps1 interactively (browser auth)  
+3. Smoke-test all 4 save buttons in Power Apps for auto-timestamp, duplicate, and chronology behavior
+4. Run UAT R-01 to R-15
+
+---
+
+## Seq 21 — Claude Code — 2026-10-03
+
+### EDC roll-up flow — CREATED AND VERIFIED
+
+**Flow created via PA REST API POST:**
+- Display name: `Trident DEV - EDCStatus roll-up`
+- Flow ID: `f710c08c-91b3-4100-89bc-3e7fc3b2bca5`
+- Trigger: EDCStatus SharePoint list (`40f08da1-5d09-411a-b6b4-758cebf537cd`)
+- State: `Started` (enabled)
+
+**Logic:**
+- Filters EDCStatus items by `VisitKeyId eq <trigger.VisitKey.Id>` (integer — avoids Lookup filter bug)
+- EDCStatus value: `In Progress` if any item In Progress, else `Complete` if total>0 and none not-complete, else `Not Started`
+- VW.Status transitions: `QC Passed` → `EDC In Progress` → `EDC Complete`
+- `EDCStartedAt` stamped once on first In Progress (preserved on subsequent triggers)
+- `EDCCompletedAt` stamped when Complete; cleared (null, bare expression) if status reverts
+- WorkflowAudit row appended for each EDCStatus change (blocked on P0-3 until UA-2 runs)
+
+**`patch_flows.ps1` updated** to include EDC entry.
+
+**Activation test results (`run_edc_tests.ps1`):**
+
+| Test | Trigger | Expected | Result |
+|------|---------|----------|--------|
+| EDC-T1 | Status=In Progress | EDCStatus=In Progress, Status=EDC In Progress, EDCStartedAt stamped | PASS |
+| EDC-T2 | All items Complete | EDCStatus=Complete, Status=EDC Complete, EDCCompletedAt stamped | PASS |
+
+All 5 roll-up flows are now live and verified in DEV:
+- Flow1_VA: `e512bee2-b2f8-49bd-a073-2bc7bc2e6522`
+- Flow2_VCS: `cef5b483-f7b1-4cae-81ff-471b35ba9007`
+- Flow3_QCF: `d0612b3d-6817-42d6-8c1e-a40a4f017f80`
+- Flow4_EDCStatus: `f710c08c-91b3-4100-89bc-3e7fc3b2bca5` (NEW this seq)
+- Flow5_PIA: `10d0d1aa-6b4c-4894-a663-1382ae0c2d6f`
+
+**Remaining blockers (unchanged from seq 20):**
+- UA-1: Import `TridentOpsCentral_updated.msapp` — blocks P1-3/4/5
+- UA-2: Run `set_wa_permissions.ps1` interactively — blocks P0-3 WorkflowAudit append-only permissions
+
+#### Next steps for Codex
+
+1. Import the updated .msapp via Power Apps Studio maker portal
+2. Run `set_wa_permissions.ps1` interactively (browser auth)
+3. Smoke-test all 4 save buttons in Power Apps
+4. Run UAT R-01 to R-15
