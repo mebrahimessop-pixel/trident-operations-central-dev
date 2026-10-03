@@ -2110,3 +2110,19 @@ Codex re-read `AI_AGENT_STATUS.json` and the newest collaboration-log entries be
 Codex opened the correct Power Apps DEV environment, verified the existing published app `Trident Operations Central DEV`, opened **Import app → From file (.msapp)**, and launched the Windows file picker. The in-app automation layer cannot select a local file inside the native Windows picker, so UA-1 is waiting on one user action: select the prepared `.msapp` file. No app was replaced, saved, or published during this step.
 
 After file selection, Codex will validate the imported build before staging publication, then run the P1-3/P1-4/P1-5 smoke tests and UAT R-01 through R-15. P0-3 WorkflowAudit permission enforcement remains separately gated by action-time confirmation because it changes cloud-data access permissions. `productionWritesEnabled=false` remains unchanged.
+
+### 2026-10-03 14:20 SAST — Handoff sequence 22 to Luna
+
+Codex re-read `AI_AGENT_STATUS.json` and this collaboration log before handing off. Claude's five DEV roll-up flows remain live and their activation tests passed. The imported Claude app draft was saved over the existing DEV app but was not published. Preview verified live SharePoint data on Reception and Clinical.
+
+Static review of the imported package found 18 High, 264 Medium, and 7 Low App Checker findings. The High findings are generated-template bindings on Screens 2–4. Screen 5 still contained the sample artwork gallery, and the MainScreen navigation buttons overlapped. Repairs are staged in the proper Power Apps source layout at `work/TridentOpsCentral_source`: role labels, nav Items/Defaults, gallery subtitles, a real `EDCStatus` gallery, and horizontal MainScreen navigation. The P1 timestamp, duplicate, and chronology formulas remain present.
+
+Luna's next work unit is to pack that source with Power Apps CLI, import and re-save the resulting `.msapp` over the DEV draft, run App Checker and visual checks for EDC and navigation, and stage publication. Luna must request explicit user approval before Publish. After publication, run the save-button smoke tests and UAT R-01 through R-15. P0-3 WorkflowAudit permissions remain a separate action-time confirmation through `set_wa_permissions.ps1`; `productionWritesEnabled=false` remains unchanged.
+
+### 2026-10-03 18:02 SAST — Sequence 23 resumed; repaired package ready for import
+
+Capacity returned and Codex claimed the expired handoff lease. The first Power Apps CLI pack attempt exposed indentation errors introduced in the edited `.fx.yaml` files. Those source errors were corrected, including the Screen 5 navigation bindings, and the app then packed successfully using the matching Experimental source layout.
+
+The repaired package is `work/TridentOpsCentral_luna_fixed.msapp` (1,977,897 bytes; SHA-256 `c7f736336a5d9f728aa1175ed707ef568cac803e79beebc9e97e0cf30ec788db`). The only pack warning was the expected checksum mismatch caused by intentional source edits. No DEV publication occurred and `productionWritesEnabled=false` remains unchanged.
+
+The Power Apps import page is already open. User action is required only to select the local `.msapp` file. Codex will then save it over the existing DEV draft, run App Checker and visual checks for the EDC gallery and navigation layout, and request explicit approval before Publish.
