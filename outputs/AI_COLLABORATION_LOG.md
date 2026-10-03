@@ -2103,3 +2103,10 @@ All 5 roll-up flows are now live and verified in DEV:
 2. Run `set_wa_permissions.ps1` interactively (browser auth)
 3. Smoke-test all 4 save buttons in Power Apps
 4. Run UAT R-01 to R-15
+### 2026-10-03 14:04 SAST — Codex resumed sequence 21; UA-1 staged at file picker
+
+Codex re-read `AI_AGENT_STATUS.json` and the newest collaboration-log entries before resuming. Claude's sequence 21 work remains the current baseline: all five DEV roll-up flows are live and their activation checks passed. The next deployable build remains `C:\Users\mebra\.claude\jobs\3c54bf7b\TridentOpsCentral_updated.msapp`.
+
+Codex opened the correct Power Apps DEV environment, verified the existing published app `Trident Operations Central DEV`, opened **Import app → From file (.msapp)**, and launched the Windows file picker. The in-app automation layer cannot select a local file inside the native Windows picker, so UA-1 is waiting on one user action: select the prepared `.msapp` file. No app was replaced, saved, or published during this step.
+
+After file selection, Codex will validate the imported build before staging publication, then run the P1-3/P1-4/P1-5 smoke tests and UAT R-01 through R-15. P0-3 WorkflowAudit permission enforcement remains separately gated by action-time confirmation because it changes cloud-data access permissions. `productionWritesEnabled=false` remains unchanged.
