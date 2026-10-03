@@ -9,21 +9,21 @@
   "handoffSequence": 23,
   "handoffCreatedAt": "2026-10-03T15:55:15+02:00",
   "handoffTrigger": "watchdog_stale_lease",
-  "workUnitsCompleted": 38,
-  "partialActionState": "Repaired DEV package is ready. User must select C:\\Users\\mebra\\Documents\\Codex\\2026-09-21\\we-are-resuming-an-existing-trident\\work\\TridentOpsCentral_luna_fixed.msapp in the open Power Apps import page.",
-  "lastCompletedAction": "Packed the repaired Power Apps source successfully as TridentOpsCentral_luna_fixed.msapp using the matching Experimental .fx.yaml layout. The parser accepted the source; SHA-256 c7f736336a5d9f728aa1175ed707ef568cac803e79beebc9e97e0cf30ec788db.",
-  "nextAction": "User selects TridentOpsCentral_luna_fixed.msapp in Power Apps. Codex then saves it over the existing DEV draft, runs App Checker and visual checks for EDC/navigation, and requests explicit approval before Publish.",
-  "sessionSummary": "Sequence 23 resumed after capacity returned. The staged source initially exposed indentation errors, which were corrected. Power Apps CLI then packed the repaired 1,977,897-byte .msapp successfully. The DEV published version remains unchanged and production writes remain disabled.",
-  "evidence": "Pack completed with only the expected checksum warning for intentionally edited unpacked sources. Output: work\\TridentOpsCentral_luna_fixed.msapp; SHA-256 c7f736336a5d9f728aa1175ed707ef568cac803e79beebc9e97e0cf30ec788db.",
-  "lastHeartbeatAt": "2026-10-03T18:20:00+02:00",
-  "updatedAt": "2026-10-03T18:20:00+02:00",
+  "workUnitsCompleted": 39,
+  "partialActionState": "The repaired package is imported and saved over the existing DEV draft. The draft is validated and remains unpublished while explicit publication approval is pending.",
+  "lastCompletedAction": "Imported work\\TridentOpsCentral_luna_fixed.msapp, replaced and saved the existing Trident Operations Central DEV draft, and preview-validated Reception, Clinical/CTA, Quality/QC, EDC, and PI Actions against live DEV SharePoint data.",
+  "nextAction": "After explicit user approval, publish the saved DEV draft, run save-button smoke tests for timestamps/duplicates/chronology, then execute UAT R-01 through R-15. Track the non-blocking MainScreen/header navigation overlap as a P2 UI refinement.",
+  "sessionSummary": "Sequence 23 completed the repaired app import and draft validation. The app is saved as Unpublished; the published DEV version remains unchanged. Role navigation and live data bindings were verified across Reception, Clinical/CTA, Quality/QC, EDC, and PI Actions. A minor header/navigation overlap remains. productionWritesEnabled=false is unchanged.",
+  "evidence": "Power Apps Studio showed Saved (Unpublished). Preview displayed DEV records DEV-UAT-20260930-VA-001, DEV-UAT-20260930-VCS-001, DEV-UAT-20260930-QC-001, DEV-UAT-20260930-EDC-001, and DEV-UAT-20260930-PIA-001 on the intended screens. Main navigation exposed Reception, Clinical / CTA, Quality / QC, EDC, PI Actions, Study Admin, and Audit.",
+  "lastHeartbeatAt": "2026-10-03T20:42:31+02:00",
+  "updatedAt": "2026-10-03T20:42:31+02:00",
   "codex": {
     "status": "WAITING_USER",
     "handoffTrigger": "weekly_cap",
     "usagePolicy": "stop_at_work_unit_cap",
     "maxWorkUnitsPerSession": 5,
     "lastCompleted": "Seq 19: F4-T1 live test, found datetime blocker in update_item.",
-    "nextAction": "After the user selects work\\TridentOpsCentral_luna_fixed.msapp, save it over the DEV draft, run App Checker and visual validation, then request publication approval.",
+    "nextAction": "Await explicit publication approval; then publish the saved DEV draft and run smoke tests plus UAT R-01 to R-15.",
     "tenantWorkAllowed": true,
     "workUnitsCompleted": 12
   },
@@ -60,25 +60,26 @@
     "P0-3_WorkflowAudit_append_only": { "status": "COMPLETED_VERIFIED", "owner": "claudeCode", "blockedOn": null },
     "P1-1_PIAction_completion_guard": { "status": "COMPLETED_VERIFIED", "owner": "codex", "blockedOn": null },
     "P1-2_QCFinding_closure_guard": { "status": "COMPLETED_VERIFIED", "owner": "codex", "blockedOn": null },
-    "P1-3_auto_timestamps": { "status": "IMPLEMENTED_IMPORT_REQUIRED", "owner": "claudeCode", "blockedOn": "Import TridentOpsCentral_updated.msapp via make.powerapps.com" },
-    "P1-4_duplicate_detection": { "status": "IMPLEMENTED_IMPORT_REQUIRED", "owner": "claudeCode", "blockedOn": "Same .msapp import as P1-3" },
-    "P1-5_chronology_validation": { "status": "IMPLEMENTED_IMPORT_REQUIRED", "owner": "claudeCode", "blockedOn": "Same .msapp import as P1-3" },
+    "P1-3_auto_timestamps": { "status": "IMPORTED_DRAFT_TEST_PENDING", "owner": "codex", "blockedOn": "Publish approved DEV draft, then smoke-test" },
+    "P1-4_duplicate_detection": { "status": "IMPORTED_DRAFT_TEST_PENDING", "owner": "codex", "blockedOn": "Publish approved DEV draft, then smoke-test" },
+    "P1-5_chronology_validation": { "status": "IMPORTED_DRAFT_TEST_PENDING", "owner": "codex", "blockedOn": "Publish approved DEV draft, then smoke-test" },
     "P1-6_timezone_verification": { "status": "COMPLETED_VERIFIED", "owner": "either", "blockedOn": null },
     "P2-1_Screen2_formula_errors": { "status": "COMPLETED_VERIFIED", "owner": "claudeCode", "blockedOn": null },
-    "P2-2_lock_system_managed_fields": { "status": "COMPLETED_VERIFIED", "owner": "claudeCode", "blockedOn": null }
+    "P2-2_lock_system_managed_fields": { "status": "COMPLETED_VERIFIED", "owner": "claudeCode", "blockedOn": null },
+    "P2-3_header_navigation_overlap": { "status": "OPEN_NONBLOCKING", "owner": "codex", "blockedOn": null }
   },
   "pendingUserActions": [
     {
       "id": "UA-1",
       "priority": "P0",
-      "action": "Import repaired Power Apps .msapp",
-      "instructions": "On the open Power Apps import page, select C:\\Users\\mebra\\Documents\\Codex\\2026-09-21\\we-are-resuming-an-existing-trident\\work\\TridentOpsCentral_luna_fixed.msapp. Codex will save it over the existing DEV draft and validate it. Do not Publish until the user explicitly approves after validation.",
-      "blocks": ["P1-3", "P1-4", "P1-5", "P2-1"]
-    },
+      "action": "Approve publication of the validated repaired DEV draft",
+      "instructions": "The repaired package is imported, saved, and preview-validated. Approve Publish to make this DEV draft available to users; production writes remain disabled.",
+      "blocks": ["P1-3", "P1-4", "P1-5", "UAT-R01-R15"]
+    }
   ],
   "finalLaunchGate": {
-    "claudeCode": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "ALL_CLEAR", "P1_FINDINGS": "P1-3/4/5 blocked UA-1", "PRODUCTION_APPROVAL": "REQUIRED" },
-    "codex": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "OPEN", "P1_FINDINGS": "OPEN", "PRODUCTION_APPROVAL": "REQUIRED" }
+    "claudeCode": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "ALL_CLEAR", "P1_FINDINGS": "P1-3/4/5 imported; live smoke tests pending", "PRODUCTION_APPROVAL": "REQUIRED" },
+    "codex": { "FINAL_REVIEW": "INCOMPLETE", "P0_FINDINGS": "ALL_CLEAR", "P1_FINDINGS": "P1-3/4/5 imported; publish and smoke tests pending", "PRODUCTION_APPROVAL": "REQUIRED" }
   },
   "handoff": {
     "primaryTrigger": "work_unit_cap",

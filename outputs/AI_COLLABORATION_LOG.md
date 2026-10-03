@@ -2153,3 +2153,22 @@ i:0#.f|membership|info@tridentclinical.co.za -> Read
 **P0-3 status: COMPLETED_VERIFIED.** UA-2 removed from pendingUserActions. All P0 findings are now clear.
 
 **Remaining before UAT:** UA-1 only — Codex must import `TridentOpsCentral_luna_fixed.msapp`, validate, get publication approval, publish, then run smoke tests and UAT R-01 to R-15.
+
+---
+
+## Seq 23 completion — Codex — 2026-10-03 20:42 SAST
+
+The repaired package `work/TridentOpsCentral_luna_fixed.msapp` was uploaded through Power Apps Studio, saved over the existing **Trident Operations Central DEV** draft, and confirmed as **Saved (Unpublished)**. The published DEV version was not changed.
+
+Preview validation passed for the repaired navigation and live SharePoint bindings:
+
+- Reception opened `Screen2` and displayed `DEV-UAT-20260930-VA-001`.
+- Clinical / CTA opened `Screen3` and displayed `DEV-UAT-20260930-VCS-001`.
+- Quality / QC opened `Screen4` and displayed `DEV-UAT-20260930-QC-001`.
+- EDC opened the repaired EDC screen and displayed `DEV-UAT-20260930-EDC-001` from the real `EDCStatus` list.
+- PI Actions opened `Screen6` and displayed `DEV-UAT-20260930-PIA-001`.
+- Main navigation exposes Reception, Clinical / CTA, Quality / QC, EDC, PI Actions, Study Admin, and Audit.
+
+The repaired formulas and bindings therefore load in the saved draft. One non-blocking P2 visual issue remains: the MainScreen/header and role-screen Workflow navigation overlap in the current responsive layout. This should be refined after the functional smoke tests unless it obstructs a test.
+
+The next action is explicit user approval to publish this validated DEV draft. After publication, Codex must smoke-test the P1-3 timestamp, P1-4 duplicate, and P1-5 chronology guards, then run UAT R-01 through R-15. `productionWritesEnabled=false` remains unchanged.
